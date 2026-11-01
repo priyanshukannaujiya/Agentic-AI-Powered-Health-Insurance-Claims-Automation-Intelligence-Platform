@@ -66,8 +66,8 @@ CodebasicsAssign 1/
 
 ### 1. Clone the Repository
 ```bash
-git clone <YOUR_GITHUB_REPO_URL>
-cd "CodebasicsAssign 1"
+git clone https://github.com/priyanshukannaujiya/FtinesPlanGenrator.git
+cd FtinesPlanGenrator
 ```
 
 ### 2. Create and Activate Virtual Environment
