@@ -1,0 +1,159 @@
+{
+    "name": "Source",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "LS_SQL_HealthInsurance",
+            "type": "LinkedServiceReference"
+        },
+        "parameters": {
+            "TableName": {
+                "type": "string"
+            }
+        },
+        "annotations": [],
+        "type": "SqlServerTable",
+        "schema": [
+            {
+                "name": "Patient_ID",
+                "type": "int",
+                "precision": 10
+            },
+            {
+                "name": "Policy_Number",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Claim_ID",
+                "type": "smallint",
+                "precision": 5
+            },
+            {
+                "name": "Claim_Date",
+                "type": "date"
+            },
+            {
+                "name": "Service_Date",
+                "type": "date"
+            },
+            {
+                "name": "Policy_Expiration_Date",
+                "type": "date"
+            },
+            {
+                "name": "Claim_Amount",
+                "type": "float",
+                "precision": 15
+            },
+            {
+                "name": "Patient_Age",
+                "type": "tinyint",
+                "precision": 3
+            },
+            {
+                "name": "Patient_Gender",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Patient_City",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Patient_State",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Hospital_ID",
+                "type": "smallint",
+                "precision": 5
+            },
+            {
+                "name": "Provider_Type",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Provider_Specialty",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Provider_City",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Provider_State",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Diagnosis_Code",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Procedure_Code",
+                "type": "int",
+                "precision": 10
+            },
+            {
+                "name": "Number_of_Procedures",
+                "type": "tinyint",
+                "precision": 3
+            },
+            {
+                "name": "Admission_Type",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Discharge_Type",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Length_of_Stay_Days",
+                "type": "tinyint",
+                "precision": 3
+            },
+            {
+                "name": "Service_Type",
+                "type": "nvarchar"
+            },
+            {
+                "name": "Deductible_Amount",
+                "type": "float",
+                "precision": 15
+            },
+            {
+                "name": "CoPay_Amount",
+                "type": "float",
+                "precision": 15
+            },
+            {
+                "name": "Number_of_Previous_Claims_Patient",
+                "type": "tinyint",
+                "precision": 3
+            },
+            {
+                "name": "Number_of_Previous_Claims_Provider",
+                "type": "tinyint",
+                "precision": 3
+            },
+            {
+                "name": "Provider_Patient_Distance_Miles",
+                "type": "float",
+                "precision": 15
+            },
+            {
+                "name": "Claim_Submitted_Late",
+                "type": "bit"
+            },
+            {
+                "name": "Is_Fraudulent",
+                "type": "bit"
+            }
+        ],
+        "typeProperties": {
+            "schema": "dbo",
+            "table": {
+                "value": "@dataset().TableName",
+                "type": "Expression"
+            }
+        }
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}

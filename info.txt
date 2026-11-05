@@ -1,0 +1,6 @@
+selected resource name:		PL_SQL_to_ADLS_Bronze
+selected resource type:		pipeline
+factory name:			adf-health-insurance-dev
+factory location:		eastus
+subscription id:		949c066d-e9dc-4318-8eeb-da82505d1939
+time of download (UTC):		Thu, 05 Nov 2026 17:03:04 GMT

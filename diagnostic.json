@@ -1,0 +1,23 @@
+{
+    "now": "2026-11-05T17:03:04.027Z",
+    "perfNow": 25588.199999999255,
+    "diagnosticCorrelation": "32ab4b4b-36c7-4e18-b6b0-3a00f8576814",
+    "source": "DownloadSupportFiles",
+    "environment": {
+        "productName": "adf",
+        "buildVersion": "1.0.102326.1",
+        "environmentType": 3,
+        "resourceName": "adf-health-insurance-dev",
+        "resourceRegion": "eastus",
+        "resourceGroup": "rg-health-insurance-dev",
+        "subscriptionId": "949c066d-e9dc-4318-8eeb-da82505d1939",
+        "sessionId": "XBef1cLH/LkZ+raOp7WLUh",
+        "operationId": "",
+        "gitType": "live",
+        "loggingKey": "3fb98c43-21c5-4523-886d-46c60ec984cf"
+    },
+    "additionalInfo": {
+        "selectedResource": "PL_SQL_to_ADLS_Bronze",
+        "selectedResourceType": "pipeline"
+    }
+}

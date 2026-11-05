@@ -1,0 +1,264 @@
+{
+    "name": "PL_SQL_to_ADLS_Bronze",
+    "properties": {
+        "activities": [
+            {
+                "name": "Get_Bronze_File_Metadata",
+                "type": "GetMetadata",
+                "state": "Inactive",
+                "onInactiveMarkAs": "Succeeded",
+                "dependsOn": [
+                    {
+                        "activity": "ForEach_Table",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "dataset": {
+                        "referenceName": "Destination",
+                        "type": "DatasetReference",
+                        "parameters": {
+                            "FolderName": "health_insurance_claims",
+                            "FileName": "synthetic_health_claims.csv"
+                        }
+                    },
+                    "fieldList": [
+                        "size",
+                        "exists",
+                        "lastModified"
+                    ],
+                    "storeSettings": {
+                        "type": "AzureBlobFSReadSettings",
+                        "recursive": true,
+                        "enablePartitionDiscovery": false
+                    },
+                    "formatSettings": {
+                        "type": "DelimitedTextReadSettings"
+                    }
+                }
+            },
+            {
+                "name": "r If_Bronze_File_Valid",
+                "type": "IfCondition",
+                "dependsOn": [
+                    {
+                        "activity": "Get_Bronze_File_Metadata",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "expression": {
+                        "value": "@and(equals(activity('Get_Bronze_File_Metadata').output.exists, true), greater(activity('Get_Bronze_File_Metadata').output.size, 0))",
+                        "type": "Expression"
+                    },
+                    "ifFalseActivities": [
+                        {
+                            "name": "Fail1",
+                            "type": "Fail",
+                            "dependsOn": [],
+                            "userProperties": [],
+                            "typeProperties": {
+                                "message": "Bronze file missing or empty",
+                                "errorCode": "BRONZE_VALIDATION_FAILED"
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Lookup_Ingestion_Config",
+                "type": "Lookup",
+                "dependsOn": [],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "userProperties": [],
+                "typeProperties": {
+                    "source": {
+                        "type": "JsonSource",
+                        "storeSettings": {
+                            "type": "AzureBlobFSReadSettings",
+                            "recursive": true,
+                            "enablePartitionDiscovery": false
+                        },
+                        "formatSettings": {
+                            "type": "JsonReadSettings"
+                        }
+                    },
+                    "dataset": {
+                        "referenceName": "DS_ADLS_Config_JSON",
+                        "type": "DatasetReference"
+                    },
+                    "firstRowOnly": false
+                }
+            },
+            {
+                "name": "ForEach_Table",
+                "type": "ForEach",
+                "dependsOn": [
+                    {
+                        "activity": "Lookup_Ingestion_Config",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "userProperties": [],
+                "typeProperties": {
+                    "items": {
+                        "value": "@activity('Lookup_Ingestion_Config').output.value[0].tables",
+                        "type": "Expression"
+                    },
+                    "activities": [
+                        {
+                            "name": "Copy data1_copy1_copy1",
+                            "type": "Copy",
+                            "dependsOn": [],
+                            "policy": {
+                                "timeout": "0.12:00:00",
+                                "retry": 0,
+                                "retryIntervalInSeconds": 30,
+                                "secureOutput": false,
+                                "secureInput": false
+                            },
+                            "userProperties": [],
+                            "typeProperties": {
+                                "source": {
+                                    "type": "SqlServerSource",
+                                    "queryTimeout": "02:00:00",
+                                    "partitionOption": "None"
+                                },
+                                "sink": {
+                                    "type": "DelimitedTextSink",
+                                    "storeSettings": {
+                                        "type": "AzureBlobFSWriteSettings"
+                                    },
+                                    "formatSettings": {
+                                        "type": "DelimitedTextWriteSettings",
+                                        "quoteAllText": true,
+                                        "fileExtension": ".txt"
+                                    }
+                                },
+                                "enableStaging": false,
+                                "translator": {
+                                    "type": "TabularTranslator",
+                                    "typeConversion": true,
+                                    "typeConversionSettings": {
+                                        "allowDataTruncation": true,
+                                        "treatBooleanAsNumber": false
+                                    }
+                                }
+                            },
+                            "inputs": [
+                                {
+                                    "referenceName": "Source",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "TableName": "@item().table_name"
+                                    }
+                                }
+                            ],
+                            "outputs": [
+                                {
+                                    "referenceName": "Destination",
+                                    "type": "DatasetReference",
+                                    "parameters": {
+                                        "FolderName": "@item().destination_folder",
+                                        "FileName": "@item().file_name"
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "name": "Log_Run_Success",
+                "type": "SqlServerStoredProcedure",
+                "dependsOn": [
+                    {
+                        "activity": "r If_Bronze_File_Valid",
+                        "dependencyConditions": [
+                            "Succeeded"
+                        ]
+                    }
+                ],
+                "policy": {
+                    "timeout": "0.12:00:00",
+                    "retry": 0,
+                    "retryIntervalInSeconds": 30,
+                    "secureOutput": false,
+                    "secureInput": false
+                },
+                "typeProperties": {
+                    "storedProcedureName": "dbo.usp_log_pipeline_run",
+                    "storedProcedureParameters": {
+                        "pipeline_name": {
+                            "value": {
+                                "value": "PL_SQL_to_ADLS_Bronze",
+                                "type": "Expression"
+                            },
+                            "type": "String"
+                        },
+                        "run_id": {
+                            "value": {
+                                "value": "@{pipeline().RunId}",
+                                "type": "Expression"
+                            },
+                            "type": "String"
+                        },
+                        "table_name": {
+                            "value": {
+                                "value": "@{activity('Lookup_Ingestion_Config').output.value[0].tables[0].table_name}",
+                                "type": "Expression"
+                            },
+                            "type": "String"
+                        },
+                        "status": {
+                            "value": "Succeeded",
+                            "type": "String"
+                        },
+                        "bytes_written": {
+                            "value": {
+                                "value": "@{activity('Get_Bronze_File_Metadata').output.size}",
+                                "type": "Expression"
+                            },
+                            "type": "Int64"
+                        },
+                        "run_start_utc": {
+                            "value": {
+                                "value": "@{pipeline().TriggerTime}",
+                                "type": "Expression"
+                            },
+                            "type": "Datetime"
+                        }
+                    }
+                },
+                "linkedServiceName": {
+                    "referenceName": "LS_SQL_HealthInsurance",
+                    "type": "LinkedServiceReference"
+                }
+            }
+        ],
+        "annotations": [],
+        "lastPublishTime": "2026-11-05T13:21:59Z"
+    },
+    "type": "Microsoft.DataFactory/factories/pipelines"
+}

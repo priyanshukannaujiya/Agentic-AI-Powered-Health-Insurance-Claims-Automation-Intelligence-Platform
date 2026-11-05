@@ -1,0 +1,21 @@
+{
+    "name": "LS_SQL_HealthInsurance",
+    "type": "Microsoft.DataFactory/factories/linkedservices",
+    "properties": {
+        "annotations": [],
+        "type": "SqlServer",
+        "typeProperties": {
+            "server": "SWEETIE\\SQLEXPRESS",
+            "database": "HEALTHINSURANCEDB",
+            "encrypt": "optional",
+            "trustServerCertificate": false,
+            "authenticationType": "SQL",
+            "userName": "adf_health_user",
+            "encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiNzEyZjI5Mi02Mzc3LTQ2OGEtOGY1MS00MGVhNmJmOTM0NjkiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+        },
+        "connectVia": {
+            "referenceName": "SHIR-HealthInsurance",
+            "type": "IntegrationRuntimeReference"
+        }
+    }
+}

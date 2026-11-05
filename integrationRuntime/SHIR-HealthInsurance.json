@@ -1,0 +1,6 @@
+{
+    "name": "SHIR-HealthInsurance",
+    "properties": {
+        "type": "SelfHosted"
+    }
+}
